@@ -55,17 +55,7 @@ def imprimir_menu():
     print(menu)
 
 
-def parse_json(nombre_archivo: str):
-    lista_jugadores = []
-    with open(nombre_archivo, "r", encoding='utf-8') as archivo:
-        dict = json.load(archivo)
-        lista_jugadores = dict["jugadores"]
 
-    return lista_jugadores
-
-
-ruta_archivo = r"C:\Users\rarug\Desktop\Parcial_python\dt.json"
-lista_jugadores = parse_json(ruta_archivo)
 
 
 # 1- Mostrar la lista de todos los jugadores del Dream Team. Con el formato:
@@ -82,12 +72,6 @@ def mostrar_nombre_y_posicion(jugadores: list):
         else:
             print("Dato no encontrado")
 
-
-# mostrar_nombre_y_posicion(lista_jugadores)
-
-# 2-Permitir al usuario seleccionar un jugador por su índice y mostrar sus estadísticas completas, incluyendo temporadas jugadas, puntos totales, promedio de puntos por partido, rebotes totales, promedio de rebotes por partido, asistencias totales, promedio de asistencias por partido, robos totales, bloqueos totales, porcentaje de tiros de campo, porcentaje de tiros libres y porcentaje de tiros triples.
-
-
 def mostrar_jugador_elegido_por_estadistica(jugadores: list, indice: int):
 
     print("Nombre {0}".format(jugadores[indice]["nombre"]))
@@ -96,11 +80,6 @@ def mostrar_jugador_elegido_por_estadistica(jugadores: list, indice: int):
         print("{0} : {1}". format(atributo, valor))
 
     return indice
-
-
-# ingreso = int(input("ingrese el indice del jugador: "))
-# mostrar_jugador_elegido_por_estadistica(lista_jugadores, ingreso)
-
 
 # 3-Después de mostrar las estadísticas de un jugador seleccionado por el usuario, permite al usuario guardar las estadísticas de ese jugador en un archivo CSV. El archivo CSV debe contener los siguientes campos: nombre, posición, temporadas, puntos totales, promedio de puntos por partido, rebotes totales, promedio de rebotes por partido, asistencias totales, promedio de asistencias por partido, robos totales, bloqueos totales, porcentaje de tiros de campo, porcentaje de tiros libres y porcentaje de tiros triples.
 
@@ -126,9 +105,6 @@ def guardar_archivo(nombre_archivo: str, contenido: str):
 def guardar_estadisticas_segun_indice_csv():
     pass
 
-
-# 4-Permitir al usuario buscar un jugador por su nombre y mostrar sus logros, como campeonatos de la NBA, participaciones en el All-Star y pertenencia al Salón de la Fama del Baloncesto, etc.
-
 def buscar_por_nombre(jugadores: list, ingreso: str):
     contador = 0
     for jugador in jugadores:
@@ -142,44 +118,31 @@ def buscar_por_nombre(jugadores: list, ingreso: str):
     if contador == len(jugadores):
         print("Dato no encontrado")
 
-
-# ingreso = input("ingrese el jugador a buscar: ").lower().capitalize()
-# buscar_por_nombre(lista_jugadores, ingreso)
-
-# Calcular y mostrar el promedio de puntos por partido de todo el equipo del Dream Team, ordenado por nombre de manera ascendente
-
 def calcular_promedio(jugadores:list, key:str):
     suma=0
     contador=0
 
     if len(jugadores)>0:
         for jugador in jugadores:
-            if key in jugador:
-                suma+=jugador[key]
+                suma+=jugador["estadisticas"][key]
                 contador+=1
         if contador>0:
             promedio=suma/contador
             print("El promedio general de {0} es {1} ".format(key, promedio))
     else:
         print("la lista esta vacia: ")
+    return promedio
 
 def calcular_y_mostrar_promedio_puntos_por_Partido(jugadores:list):
-    calcular_promedio(jugadores, ["promedio_puntos_por_partido"])
-        
-
-
-
-# calcular_y_mostrar_promedio_puntos_por_Partido(lista_jugadores)
-
-# Permitir al usuario ingresar el nombre de un jugador y mostrar si ese jugador es miembro del Salón de la Fama del Baloncesto.
+    pass
 
 def verificar_salon_de_la_fama(jugadores:list, ingreso:str):
-    encontrado=False
     miembro="Miembro del Salon de la Fama del Baloncesto"
     contador=0
 
     for jugador in jugadores:
-        if re.search(jugador["nombre"][0:4], ingreso[0:4]) != None:
+        encontrado=False
+        if re.search(jugador["nombre"][0:6], ingreso[0:6]) != None:
             if miembro in jugador["logros"]:
                 print("{} es miembro del Salón de la Fama del Baloncesto".format(jugador["nombre"]))
                 encontrado = True
@@ -188,117 +151,64 @@ def verificar_salon_de_la_fama(jugadores:list, ingreso:str):
 
     if contador == len(jugadores):
         print("Dato no encontrado")
-        
-# Calcular y mostrar el jugador con la mayor cantidad de asistencias totales.
 
-def calcular_key_totales(jugadores:list, key:str):
-    jugador_max=None
-    max_key=0
+
+def calcular_key_totales(jugadores: list, key: str, flag: str):
+    max_valor = None
+    jugador_max = None
+
     for jugador in jugadores:
-        nombre=jugador["nombre"]
-        estadistica_total=jugador["estadisticas"][key]
+        estadistica_total = jugador["estadisticas"][key]
 
-        if estadistica_total >max_key:
-            max_key=estadistica_total
-            jugador_max=nombre
-    print("El jugador con mayor cantidad de asistencias es {0} con {1} ".format(jugador_max, max_key))
+        if max_valor is None or (flag == "mayor" and estadistica_total > max_valor) or (flag == "menor" and estadistica_total < max_valor):
+            max_valor = estadistica_total
+            jugador_max = jugador
 
-# 10-Permitir al usuario ingresar un valor y mostrar los jugadores que han promediado más puntos por partido que ese valor.
-
-def mostrar_promedio_puntos_por_valor(jugadores:list, ingreso:int):
-    contador=0
-    for jugador in jugadores:
-        nombre=jugador["nombre"]
-        promedio=calcular_promedio(jugador, "promedio_puntos_por_partido")
-
-        if promedio>ingreso:
-            contador+=1
-            print("{0} tiene/n mas promedio de puntos totales que el valor dado ".format(nombre))
-
-
-
-
-
-while True:
-
-    imprimir_menu()
-
-    opcion = input("Ingrese la opcion deseada: ")
-    # opcion = validar_entrada(opcion, r"^[0-21]$")
-
-    if opcion == "1":
-        mostrar_nombre_y_posicion(lista_jugadores)
-
-    elif opcion == "2":
-        ingreso = int(input("ingrese el indice del jugador: "))
-        mostrar_jugador_elegido_por_estadistica(lista_jugadores, ingreso)
-
-    elif opcion == "3":
-        pass
-
-    elif opcion == "4":
-        ingreso = input("ingrese el nombre del jugador a buscar: ").lower().capitalize()
-        buscar_por_nombre(lista_jugadores, ingreso)
-
-    elif opcion == "5":
-        calcular_y_mostrar_promedio_puntos_por_Partido(lista_jugadores)
-    
-    elif opcion == "6":
-        ingreso = input("ingrese el nombre del jugador a buscar: ").lower().capitalize()
-        verificar_salon_de_la_fama(lista_jugadores, ingreso)
-
-    elif opcion == "7":
-        calcular_key_totales(lista_jugadores, "rebotes_totales")
-
-    elif opcion == "8":
-        calcular_key_totales(lista_jugadores, "porcentaje_tiros_de_campo")
-
-    elif opcion == "9":
-        calcular_key_totales(lista_jugadores, "asistencias_totales")
-
-    elif opcion == "10":
-        ingreso = int(input("ingrese un valor: "))
-        mostrar_promedio_puntos_por_valor(lista_jugadores, ingreso)
-
-    elif opcion == "11":
-        pass
-
-    elif opcion == "12":
-        pass
-
-    elif opcion == "13":
-        calcular_key_totales(lista_jugadores, "robos_totales")
-
-    elif opcion == "14":
-        calcular_key_totales(lista_jugadores, "bloqueos_totales")
-
-    elif opcion == "15":
-        pass
-
-    elif opcion == "16":
-        pass
-
-    elif opcion == "17":
-        pass
-
-    elif opcion == "18":
-        pass
-
-    elif opcion == "19":
-        calcular_key_totales(lista_jugadores, "temporadas")
-
-    elif opcion == "20":
-        pass
-
-    elif opcion == "21":
-        clear_console()
-
-    elif opcion == "0":
-        print("Adios, hasta la proxima!!!")
-        break
+    if jugador_max is not None:
+        print("El jugador con {0} cantidad de {1} es {2} con {3}".format(flag, key, jugador_max["nombre"], max_valor))
     else:
-        print("Opción inválida. Intente de nuevo.")
+        print("No se encontró ningún jugador en la lista")
 
-        input("Apriete enter para seguir ")
+    return jugador_max
+
+def mostrar_key_por_valor_dado(jugadores:list, ingreso:int, key):
+    jugadores_superiores=[]
+
+    for jugador in jugadores:
+        nombre=jugador["nombre"]
+        promedio_total=jugador["estadisticas"][key]
+
+        if promedio_total>ingreso:
+            jugadores_superiores.append(nombre)
+    
+    if len(jugadores_superiores)>0:
+        print("Los siguientes jugadores tienen un {0} total mayor a {1} ".format(key,ingreso))
+        for jugador in jugadores_superiores:
+            print("Nombre: ",jugador)
+    else:
+        print("no hay jugadores de mayor promedio que {0} ".format(ingreso))
 
 
+def mostrar_promedio_menos_el_menor(jugadores:list):
+    minimo=calcular_key_totales(jugadores, "promedio_puntos_por_partido", "menor")
+    lista_mayores=[]
+    for jugador in jugadores:
+        if jugador["estadisticas"]["promedio_puntos_por_partido"] > minimo["estadisticas"]["promedio_puntos_por_partido"]:
+            lista_mayores.append(jugador)
+    calcular_promedio(lista_mayores, "promedio_puntos_por_partido")
+
+def calcular_mayor_logros(jugadores:list):
+    max_logros=0
+    jugador_max_logros=None
+
+    for jugador in jugadores:
+        logros_totales=len(jugador["logros"])
+
+        if logros_totales > max_logros:
+            max_logros=logros_totales
+            jugador_max_logros=jugador
+
+    if jugador_max_logros is not None:
+        print("El jugador con mayor cantidad de logros es {0} con {1}".format(jugador_max_logros["nombre"], max_logros))
+    else:
+        print("No se encontró ningún jugador en la lista")
