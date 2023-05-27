@@ -1,4 +1,4 @@
-from parcial import *
+from funciones import *
 import json
 
 def parse_json(nombre_archivo: str):
@@ -18,8 +18,8 @@ while True:
     imprimir_menu()
 
     opcion = input("Ingrese la opcion deseada: ")
-        # opcion = validar_entrada(opcion, r"^[0-21]$")
-
+    # opcion = validar_entrada(opcion, r"^[0-21]$")
+    
     if opcion == "1":
         mostrar_nombre_y_posicion(lista_jugadores)
 
@@ -35,7 +35,6 @@ while True:
         buscar_por_nombre(lista_jugadores, ingreso)
 
     elif opcion == "5":
-        calcular_promedio(lista_jugadores, "promedio_puntos_por_partido")
         calcular_y_mostrar_promedio_puntos_por_Partido(lista_jugadores)
         
     elif opcion == "6":
@@ -87,7 +86,8 @@ while True:
         calcular_key_totales(lista_jugadores, "temporadas", "mayor")
 
     elif opcion == "20":
-        pass
+        ingreso = int(input("ingrese un valor: "))
+        ordenar_posiciones(lista_jugadores, ingreso)
 
     elif opcion == "21":
         clear_console()
@@ -97,5 +97,6 @@ while True:
         break
     else:
         print("Opción inválida. Intente de nuevo.")
-
-        input("Apriete enter para seguir ")
+        
+    print("------------------------------------------------------------------------------------------------------------------------")
+    input("Apriete enter para seguir ")
