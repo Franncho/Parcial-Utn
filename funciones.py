@@ -9,6 +9,24 @@ def clear_console() -> None:
     _ = input('Presiona enter para continuar')
     os.system('cls')
 
+def guardar_archivo(nombre_archivo: str, contenido: str):
+    """
+    Esta funcion guarda el contenido en un archivo con el nombre especificado.
+
+    Parametros:
+    - nombre_archivo: El nombre o ruta del archivo a guardar.
+    - contenido: El contenido a guardar en el archivo.
+
+    Retorna:
+    - True si se guardó el archivo correctamente, False en caso contrario.
+    """
+    try:
+        with open(nombre_archivo, "w+") as archivo:
+            archivo.write(contenido)
+        return True
+    except:
+        return False
+    
 def validar_entrada(entrada: str, patron: str):
     """
     Esta funcion valida la entrada del usuario utilizando una expresión regular.
@@ -79,8 +97,7 @@ def mostrar_nombre_y_posicion(jugadores: list):
         print("La lista se encuentra vacia")
 
 #2
-def mostrar_jugador_elegido_por_estadistica(jugadores: list, indice: int):
-
+def mostrar_jugador_elegido_con_estadisticas(jugadores: list, indice: int):
     """
     Esta funcion muestra la informacion de un jugador especifico según el indice dado.
 
@@ -91,34 +108,15 @@ def mostrar_jugador_elegido_por_estadistica(jugadores: list, indice: int):
     Retorna:
         int: El indice del jugador mostrado.
     """
+    if indice<=len(jugadores):
+        print("Nombre {0}".format(jugadores[indice]["nombre"]))
+        print("Posicion {0}".format(jugadores[indice]["posicion"]))
 
-    print("Nombre {0}".format(jugadores[indice]["nombre"]))
-
-    for atributo, valor in jugadores[indice]["estadisticas"].items():
-        print("{0} : {1}". format(atributo, valor))
-
-    return indice
-
-
-# 3-Después de mostrar las estadísticas de un jugador seleccionado por el usuario, permite al usuario guardar las estadísticas de ese jugador en un archivo CSV. El archivo CSV debe contener los siguientes campos: nombre, posición, temporadas, puntos totales, promedio de puntos por partido, rebotes totales, promedio de rebotes por partido, asistencias totales, promedio de asistencias por partido, robos totales, bloqueos totales, porcentaje de tiros de campo, porcentaje de tiros libres y porcentaje de tiros triples.
-
-def guardar_archivo(nombre_archivo: str, contenido: str):
-    """
-    Esta funcion guarda el contenido en un archivo con el nombre especificado.
-
-    Parametros:
-    - nombre_archivo: El nombre o ruta del archivo a guardar.
-    - contenido: El contenido a guardar en el archivo.
-
-    Retorna:
-    - True si se guardó el archivo correctamente, False en caso contrario.
-    """
-    try:
-        with open(nombre_archivo, "w+") as archivo:
-            archivo.write(contenido)
-        return True
-    except:
-        return False
+        for atributo, valor in jugadores[indice]["estadisticas"].items():
+            print("{0} : {1}". format(atributo, valor))
+        return indice
+    else:
+        print("No se puede acceder al indice que eligio. Intente denuevo")
 
 #3
 def guardar_estadisticas_segun_indice_csv():
@@ -196,28 +194,25 @@ def sort_alfabetico(jugadores: list, key: str):
     Retorna:
         list: Una nueva lista de jugadores ordenada alfabéticamente según el atributo dado, o una lista vacía si la entrada está vacía.
     """
-    if len(jugadores) > 0:
-        lista = jugadores[:]
-        lista_derecha = []
-        lista_izquierda = []
+    
 
-        if len(lista) <= 1:
-            return lista
-        else:
-            for jugador in lista[1:]:
-                if jugador[key] > lista[0][key]:
-                    lista_derecha.append(jugador)
-                else:
-                    lista_izquierda.append(jugador)
+    lista = jugadores[:]
+    lista_derecha = []
+    lista_izquierda = []
 
-        lista_izquierda = sort_alfabetico(lista_izquierda, key)
-        lista_derecha = sort_alfabetico(lista_derecha, key)
-
-        return lista_izquierda + [lista[0]] + lista_derecha
+    if len(lista) <= 1:
+        return lista
     else:
-        print("La lista está vacía")
-        return []  # Devuelve una lista vacia si la entrada esta vacia
+        for jugador in lista[1:]:
+            if jugador[key] > lista[0][key]:
+                lista_derecha.append(jugador)
+            else:
+                lista_izquierda.append(jugador)
 
+    lista_izquierda = sort_alfabetico(lista_izquierda, key)
+    lista_derecha = sort_alfabetico(lista_derecha, key)
+
+    return lista_izquierda + [lista[0]] + lista_derecha
 
 #5
 def calcular_y_mostrar_promedio_puntos_por_Partido(jugadores:list):
@@ -267,6 +262,7 @@ def verificar_salon_de_la_fama(jugadores:list, ingreso:str):
                 if miembro in jugador["logros"]:
                     print("{} es miembro del Salón de la Fama del Baloncesto".format(jugador["nombre"]))
                     encontrado = True
+                    
                 elif encontrado==False:
                     print("{0} no pertenece al Salón de la Fama del Baloncesto.".format(jugador["nombre"]))
 
@@ -288,22 +284,22 @@ def calcular_key_totales(jugadores: list, key: str, flag: str):
 
     """
     if len(jugadores)>0:
-        max_valor = None
-        jugador_max = None
+        valor = None
+        jugador_max_min = None
 
         for jugador in jugadores:
             estadistica_total = jugador["estadisticas"][key]
 
-            if max_valor is None or (flag == "mayor" and estadistica_total > max_valor) or (flag == "menor" and estadistica_total < max_valor):
-                max_valor = estadistica_total
-                jugador_max = jugador
+            if valor is None or (flag == "mayor" and estadistica_total > valor) or (flag == "menor" and estadistica_total < valor):
+                valor = estadistica_total
+                jugador_max_min = jugador
 
-        if jugador_max is not None:
-            print("El jugador con {0} cantidad de {1} es {2} con {3}".format(flag, key, jugador_max["nombre"], max_valor))
+        if jugador_max_min is not None:
+            print("El jugador con {0} cantidad de {1} es {2} con {3}".format(flag, key, jugador_max_min["nombre"], valor))
         else:
             print("No se encontró ningún jugador en la lista")
 
-        return jugador_max
+        return jugador_max_min
     else:
         print("La lista esta vacia")
 
@@ -321,23 +317,24 @@ def mostrar_key_por_valor_dado(jugadores:list, ingreso:int, key:str):
         None
     """
     if len(jugadores)>0:
+
         jugadores_superiores=[]
 
         for jugador in jugadores:
-            nombre=jugador["nombre"]
-            promedio_total=jugador["estadisticas"][key]
+            estadistica=jugador["estadisticas"][key]
 
-            if promedio_total>ingreso:
-                jugadores_superiores.append(nombre)
+            if estadistica>ingreso:
+                jugadores_superiores.append(jugador)
         
         if len(jugadores_superiores)>0:
             print("Los siguientes jugadores tienen un {0} total mayor a {1} ".format(key,ingreso))
             for jugador in jugadores_superiores:
-                print("Nombre: ",jugador)
-                
+                print("Nombre: ",jugador["nombre"])
+
             return jugadores_superiores
         else:
             print("no hay jugadores de mayor {0} que {1} ".format(key,ingreso))
+
     else:
         print("La lista esta vacia")
 
@@ -406,10 +403,34 @@ def ordenar_posiciones(jugadores: list, ingreso: int):
         None
     """
     jugadores_ordenados = sort_alfabetico(jugadores, "posicion")
-    key_dada = mostrar_key_por_valor_dado(jugadores, ingreso, "porcentaje_tiros_de_campo")
+    key_dada=mostrar_key_por_valor_dado(jugadores, ingreso, "porcentaje_tiros_de_campo")
 
     print("Jugadores ordenados alfabéticamente por posición:")
 
     for jugador in jugadores_ordenados:
-        porcentaje_tiros=jugador["estadisticas"][key_dada]
-        print("Nombre: {0}, Posición: {1}, Porcentaje de tiros de campo: {2}".format(jugador["nombre"], jugador["posicion"], porcentaje_tiros))
+        for lista in key_dada:
+            if jugador["nombre"] == lista["nombre"]: 
+                print("Nombre: {0} Posición: {1}, Porcentaje de tiros de campo {2}:".format(jugador["nombre"],jugador["posicion"], jugador["estadisticas"]["porcentaje_tiros_de_campo"]))
+
+
+def bonus(jugadores:list):
+    lista_datos=[]
+    lista_estadisticas=[]
+
+    rankings = {
+        "puntos": [],
+        "rebotes": [],
+        "asistencias": [],
+        "robos": []
+    }
+
+    for jugador in jugadores:
+        rankings["puntos"].append((jugador["nombre"], jugador["estadisticas"]["puntos_totales"]))
+        rankings["rebotes"].append((jugador["nombre"], jugador["estadisticas"]["rebotes_totales"]))
+        rankings["asistencias"].append((jugador["nombre"], jugador["estadisticas"]["asistencias_totales"]))
+        rankings["robos"].append((jugador["nombre"], jugador["estadisticas"]["robos_totales"]))
+
+    estadisticas=",".join(lista_estadisticas)
+
+    guardar_archivo("bonus_23.csv", estadisticas)
+    print(rankings)

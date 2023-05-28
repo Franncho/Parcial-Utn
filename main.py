@@ -25,7 +25,7 @@ while True:
 
     elif opcion == "2":
         ingreso = int(input("ingrese el indice del jugador: "))
-        mostrar_jugador_elegido_por_estadistica(lista_jugadores, ingreso)
+        mostrar_jugador_elegido_con_estadisticas(lista_jugadores, ingreso)
 
     elif opcion == "3":
         pass
@@ -35,7 +35,10 @@ while True:
         buscar_por_nombre(lista_jugadores, ingreso)
 
     elif opcion == "5":
-        calcular_y_mostrar_promedio_puntos_por_Partido(lista_jugadores)
+        if len(lista_jugadores)>0:
+            calcular_y_mostrar_promedio_puntos_por_Partido(lista_jugadores)
+        else:
+            print("la lista esta vacia")
         
     elif opcion == "6":
         ingreso = input("ingrese el nombre del jugador a buscar: ").lower().capitalize()
@@ -86,8 +89,14 @@ while True:
         calcular_key_totales(lista_jugadores, "temporadas", "mayor")
 
     elif opcion == "20":
-        ingreso = int(input("ingrese un valor: "))
-        ordenar_posiciones(lista_jugadores, ingreso)
+        if len(lista_jugadores)>0:
+            ingreso = int(input("ingrese un valor: "))
+            ordenar_posiciones(lista_jugadores, ingreso)
+        else:
+            print("la lista esta vacia")
+    
+    elif opcion == "23":
+        bonus(lista_jugadores)
 
     elif opcion == "21":
         clear_console()
