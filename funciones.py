@@ -27,22 +27,6 @@ def guardar_archivo(nombre_archivo: str, contenido: str):
     except:
         return False
     
-def validar_entrada(entrada: str, patron: str):
-    """
-    Esta funcion valida la entrada del usuario utilizando una expresión regular.
-
-    Parámetros:
-        - entrada: La entrada del usuario a validar.
-        - patron: Expresión regular que define el formato válido.
-
-    Retorna:
-        str: La entrada validada.
-    """
-    while not re.match (patron, entrada):
-        print("entrada invalida. intente denuevo")
-        entrada = input()
-    return entrada
-
 
 def imprimir_menu():
     menu=(
@@ -73,6 +57,13 @@ def imprimir_menu():
     )
     print(menu)
 
+def validar_entero_regex(entrada):
+    if re.match(r'^[0-9]+$', entrada):
+        return int(entrada)
+    else:
+        print("Intente nuevamente")
+        return None
+    
 #1
 def mostrar_nombre_y_posicion(jugadores: list):
     """
@@ -262,7 +253,7 @@ def verificar_salon_de_la_fama(jugadores:list, ingreso:str):
                 if miembro in jugador["logros"]:
                     print("{} es miembro del Salón de la Fama del Baloncesto".format(jugador["nombre"]))
                     encontrado = True
-                    
+
                 elif encontrado==False:
                     print("{0} no pertenece al Salón de la Fama del Baloncesto.".format(jugador["nombre"]))
 
@@ -314,7 +305,7 @@ def mostrar_key_por_valor_dado(jugadores:list, ingreso:int, key:str):
         key (str): La clave (key) de la estadistica a comparar.
 
     Retorna:
-        None
+        list: Una lista de diccionarios que representan a los jugadores que tienen un valor mayor que el ingreso para la clave especificada.
     """
     if len(jugadores)>0:
 
@@ -329,7 +320,7 @@ def mostrar_key_por_valor_dado(jugadores:list, ingreso:int, key:str):
         if len(jugadores_superiores)>0:
             print("Los siguientes jugadores tienen un {0} total mayor a {1} ".format(key,ingreso))
             for jugador in jugadores_superiores:
-                print("Nombre: ",jugador["nombre"])
+                print("Nombre: ",jugador["nombre"], jugador["estadisticas"][key])
 
             return jugadores_superiores
         else:
@@ -408,29 +399,7 @@ def ordenar_posiciones(jugadores: list, ingreso: int):
     print("Jugadores ordenados alfabéticamente por posición:")
 
     for jugador in jugadores_ordenados:
+
         for lista in key_dada:
             if jugador["nombre"] == lista["nombre"]: 
                 print("Nombre: {0} Posición: {1}, Porcentaje de tiros de campo {2}:".format(jugador["nombre"],jugador["posicion"], jugador["estadisticas"]["porcentaje_tiros_de_campo"]))
-
-
-def bonus(jugadores:list):
-    lista_datos=[]
-    lista_estadisticas=[]
-
-    rankings = {
-        "puntos": [],
-        "rebotes": [],
-        "asistencias": [],
-        "robos": []
-    }
-
-    for jugador in jugadores:
-        rankings["puntos"].append((jugador["nombre"], jugador["estadisticas"]["puntos_totales"]))
-        rankings["rebotes"].append((jugador["nombre"], jugador["estadisticas"]["rebotes_totales"]))
-        rankings["asistencias"].append((jugador["nombre"], jugador["estadisticas"]["asistencias_totales"]))
-        rankings["robos"].append((jugador["nombre"], jugador["estadisticas"]["robos_totales"]))
-
-    estadisticas=",".join(lista_estadisticas)
-
-    guardar_archivo("bonus_23.csv", estadisticas)
-    print(rankings)
