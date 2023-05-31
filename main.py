@@ -21,16 +21,21 @@ while True:
 
     if re.match(r'^[0-9]+$', opcion):
         opcion=int(opcion)
+        flag=True
         match(opcion):
             case 1:
                 mostrar_nombre_y_posicion(lista_jugadores)
 
             case 2:
                 ingreso = int(input("ingrese el indice del jugador: "))
-                mostrar_jugador_elegido_con_estadisticas(lista_jugadores, ingreso)
+                mostrar_jugador_elegido_con_estadisticas(lista_jugadores, ingreso, True)
+                flag=False
 
             case 3:
-                pass
+                if flag==False:
+                    guardar_estadisticas_segun_indice_csv(lista_jugadores, ingreso)
+                else:
+                    print("tenes que ejecutar el 2 antes del 3")
 
             case 4:
                 ingreso = input("ingrese el nombre del jugador a buscar: ").lower().capitalize()
@@ -68,7 +73,7 @@ while True:
                 ingreso_validado = validar_entero_regex(ingreso)
 
                 if ingreso_validado is not None:
-                    mostrar_key_por_valor_dado(lista_jugadores, ingreso, "promedio_rebotes_por_partido")
+                    mostrar_key_por_valor_dado(lista_jugadores, ingreso_validado, "promedio_rebotes_por_partido")
                 
 
             case 12:
@@ -76,7 +81,7 @@ while True:
                 ingreso_validado = validar_entero_regex(ingreso)
 
                 if ingreso_validado is not None:
-                    mostrar_key_por_valor_dado(lista_jugadores, ingreso, "promedio_asistencias_por_partido")
+                    mostrar_key_por_valor_dado(lista_jugadores, ingreso_validado, "promedio_asistencias_por_partido")
                 
             
             case 13:
@@ -90,7 +95,7 @@ while True:
                 ingreso_validado = validar_entero_regex(ingreso)
 
                 if ingreso_validado is not None:
-                    mostrar_key_por_valor_dado(lista_jugadores, ingreso, "porcentaje_tiros_libres")
+                    mostrar_key_por_valor_dado(lista_jugadores, ingreso_validado, "porcentaje_tiros_libres")
 
             case 16:
                 calcular_mayor_logros(lista_jugadores)
@@ -114,8 +119,26 @@ while True:
                         ordenar_posiciones(lista_jugadores, ingreso)
                 else:
                     print("la lista esta vacia")
-            
+
             case 21:
+                jugadores_por_posicion=contar_jugadores_por_posicion(lista_jugadores)
+                for posicion, cantidad in jugadores_por_posicion.items():
+                    print("Posicion {0} : Cantidad {1}".format(posicion, cantidad))
+            
+            case 22:
+                jugadores_all_star = mostrar_jugadores_all_star(lista_jugadores)
+                for jugador in jugadores_all_star:
+                    nombre = jugador["nombre"]
+                    cantidad = jugador["logros"]
+                    print("{0} ({1} veces en All-Star)".format(nombre, cantidad))
+
+            case 23:
+                mejores_estadisticas_cada_valor(lista_jugadores)
+            
+            case 24:
+                mejores_estadisticas(lista_jugadores)
+                
+            case 25:
                 clear_console()
             
             case 0:
